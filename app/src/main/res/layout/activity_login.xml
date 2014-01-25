@@ -1,0 +1,171 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LoginTheme"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo_2x" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp" >
+
+        <FrameLayout
+            style="@style/LoginTheme.FormLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tab_container" >
+
+            <ProgressBar
+                android:id="@+id/login_form_spinner"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:indeterminateOnly="true"
+                android:visibility="gone" />
+
+            <TableLayout
+                android:id="@+id/login_form_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:shrinkColumns="0"
+                android:stretchColumns="1" >
+
+                <TableRow android:gravity="center_vertical" >
+
+                    <TextView
+                        android:id="@+id/login_url_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:gravity="right"
+                        android:text="@string/login_url" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <EditText
+                            android:id="@+id/login_url"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_toLeftOf="@+id/login_url_domain_label"
+                            android:inputType="textUri" />
+
+                        <TextView
+                            android:id="@+id/login_url_domain_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/login_url"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignTop="@+id/login_url"
+                            android:gravity="center_vertical"
+                            android:text=".deskpro.com" />
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow android:gravity="center_vertical" >
+
+                    <TextView
+                        android:id="@+id/login_email_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:gravity="right"
+                        android:text="@string/login_email" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <EditText
+                            android:id="@+id/login_email"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentRight="true"
+                            android:inputType="textEmailAddress" />
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow android:gravity="center_vertical" >
+
+                    <TextView
+                        android:id="@+id/login_password_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:gravity="right"
+                        android:text="@string/login_password" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <EditText
+                            android:id="@+id/login_password"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentRight="true"
+                            android:inputType="textPassword" />
+                    </RelativeLayout>
+                </TableRow>
+
+                <Button
+                    android:id="@+id/login_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/login" />
+            </TableLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/tab_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-4dp"
+            android:orientation="horizontal" >
+
+            <com.deskpro.mobile.layouts.BorderBottomLayout
+                android:id="@+id/login_onsite_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp" >
+
+                <Button
+                    android:id="@+id/login_onsite"
+                    style="@style/LoginTheme.BtnTab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/login_onsite" />
+            </com.deskpro.mobile.layouts.BorderBottomLayout>
+
+            <com.deskpro.mobile.layouts.BorderBottomLayout
+                android:id="@+id/login_cloud_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp" >
+
+                <Button
+                    android:id="@+id/login_cloud"
+                    style="@style/LoginTheme.BtnTab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/login_cloud" />
+            </com.deskpro.mobile.layouts.BorderBottomLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

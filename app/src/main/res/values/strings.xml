@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DeskPRO</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="tab_notif">Notifications</string>
+    <string name="tab_tickets">Tickets</string>
+    <string name="login">Login</string>
+    <string name="login_onsite">Server</string>
+    <string name="login_url">URL:</string>
+    <string name="login_email">Email:</string>
+    <string name="login_password">Password:</string>
+    <string name="login_cloud">Cloud</string>
+    <string name="login_error">Login Error</string>
+    <string name="login_error_empty_url">Please enter a URL</string>
+    <string name="login_error_invalid_url">The URL you entered does not appear to be a valid DeskPRO URL.</string>
+    <string name="login_error_credentials">The email address or password you entered is incorrect.</string>
+    <string name="title_activity_main_activity_test">MainActivityTest</string>
+
+</resources>

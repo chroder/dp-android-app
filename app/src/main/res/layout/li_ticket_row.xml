@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/standard_v_padding"
+    android:paddingLeft="@dimen/standard_h_padding"
+    android:paddingRight="@dimen/standard_h_padding"
+    android:paddingTop="@dimen/standard_v_padding" >
+
+    <LinearLayout
+        android:id="@+id/item_id_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/item_title"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/item_title"
+        android:layout_marginRight="@dimen/standard_h_padding"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/item_id"
+            style="@style/AppTheme.Notif.Id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#ID" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/item_title"
+        style="@style/AppTheme.Notif.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/time_container"
+        android:layout_toRightOf="@+id/item_id_container"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="Item Title" />
+
+    <LinearLayout
+        android:id="@+id/time_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/item_title"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/item_title"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:id="@+id/time"
+            style="@style/AppTheme.Notif.Time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="15 minutes ago" />
+    </LinearLayout>
+
+    <com.deskpro.mobile.layouts.FlowLayout
+        android:id="@+id/props_list"
+        android:layout_below="@+id/item_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+    </com.deskpro.mobile.layouts.FlowLayout>
+
+</RelativeLayout>
