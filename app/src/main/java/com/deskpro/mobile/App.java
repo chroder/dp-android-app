@@ -2,8 +2,11 @@ package com.deskpro.mobile;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.deskpro.mobile.models.ApiSession;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,10 +21,23 @@ public class App extends Application implements RemoteJsonLoader.GsonRetriever
 	public static final String ACTIVITY_NOTIF = "notif";
 
 	private Gson gson;
+	private ApiSession apiSession;
 
 	public static App from(Context context)
 	{
 		return (App)context.getApplicationContext();
+	}
+
+	public void onCreate()
+	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		apiSession = new ApiSession(
+			prefs.getString("apiToken", null),
+			prefs.getString("email", null),
+			prefs.getString("apiUrl", null),
+			prefs.getString("helpdeskUrl", null),
+			prefs.getString("cloudName", null)
+		);
 	}
 
 	@Override

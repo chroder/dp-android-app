@@ -1,6 +1,6 @@
-package com.deskpro.mobile.models.api;
+package com.deskpro.mobile.dpapi.models.response;
 
-public class TestModel
+public class TestResponse
 {
 	private int apiVersion;
 	private String apiUrl;

@@ -29,6 +29,6 @@
             android:name="com.deskpro.mobile.MainActivity"
             android:label="@string/app_name" >
         </activity>
-    </application>
+	</application>
 
 </manifest>

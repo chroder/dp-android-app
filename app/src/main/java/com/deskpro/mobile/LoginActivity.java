@@ -6,9 +6,6 @@ import java.util.regex.Pattern;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,9 +13,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
-
-import com.deskpro.mobile.models.api.TestModel;
-import com.deskpro.mobile.util.RemoteJsonLoader;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -69,9 +63,6 @@ public class LoginActivity extends FragmentActivity
 		});
         
         toggleTabs();
-
-		Log.d("login", "abc");
-		getSupportLoaderManager().initLoader(0, new Bundle(), new TestLoaderCallbacks());
     }
 	
 	// ########################################################################
@@ -233,26 +224,5 @@ public class LoginActivity extends FragmentActivity
 	private String getFormPassword() {
 		String password = emailText.getText().toString();
 		return password;
-	}
-
-	private class TestLoaderCallbacks implements LoaderManager.LoaderCallbacks<TestModel>
-	{
-		@Override
-		public Loader<TestModel> onCreateLoader (int i, Bundle bundle)
-		{
-			return new RemoteJsonLoader<TestModel>(LoginActivity.this, TestModel.class, "http://support.deskpro.com/index.php/api/test");
-		}
-
-		@Override
-		public void onLoadFinished (Loader<TestModel> testModelLoader, TestModel testModel)
-		{
-			Log.d("login", testModel.toString());
-		}
-
-		@Override
-		public void onLoaderReset (Loader<TestModel> testModelLoader)
-		{
-
-		}
 	}
 }
