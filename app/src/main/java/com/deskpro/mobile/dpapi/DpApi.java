@@ -1,10 +1,12 @@
 package com.deskpro.mobile.dpapi;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.deskpro.mobile.dpapi.models.request.RequestModel;
 import com.deskpro.mobile.dpapi.models.response.HttpResponse;
 import com.deskpro.mobile.util.Strings;
+import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -22,8 +24,8 @@ public class DpApi
 	public static final String TAG = DpApi.class.getSimpleName();
 
 	/**
-	 * The root API url. This should include the '/api/' bit.
-	 * Example: http://example.com/index.php/api/
+	 * The root API url. This should include the '/api' bit.
+	 * Example: http://example.com/index.php/api
 	 */
 	private String url;
 
@@ -70,7 +72,7 @@ public class DpApi
 	 * @param url  The root API url
 	 * @return
 	 */
-	public static final DpApi createAnon(String url)
+	public static final DpApi newAnonymous(String url)
 	{
 		return new DpApi(url, null, null, 0);
 	}
@@ -83,7 +85,7 @@ public class DpApi
 	 * @param apiKey The API key
 	 * @return
 	 */
-	public static final DpApi createWithKey(String url, String apiKey)
+	public static final DpApi newWithKey(String url, String apiKey)
 	{
 		return new DpApi(url, apiKey, null, 0);
 	}
@@ -99,7 +101,7 @@ public class DpApi
 	 * @param agentId  The ID of the agent to run all calls as
 	 * @return
 	 */
-	public static final DpApi createWithKeyAndAgentContext(String url, String apiKey, int agentId)
+	public static final DpApi newWithKeyAndAgentContext(String url, String apiKey, int agentId)
 	{
 		return new DpApi(url, apiKey, null, agentId);
 	}
@@ -111,7 +113,7 @@ public class DpApi
 	 * @param apiToken
 	 * @return
 	 */
-	public static final DpApi createWithToken(String url, String apiToken)
+	public static final DpApi newWithToken(String url, String apiToken)
 	{
 		return new DpApi(url, null, apiToken, 0);
 	}
@@ -124,7 +126,7 @@ public class DpApi
 	 */
 	private DpApi(String url, String apiKey, String apiToken, int agentId)
 	{
-		this.url      = Strings.trim(url, '/', Strings.TRIM_RIGHT) + '/';
+		this.url      = Strings.trim(url, '/', Strings.TRIM_RIGHT);
 		this.apiKey   = apiKey;
 		this.apiToken = apiToken;
 		this.agentId  = agentId;
@@ -207,7 +209,7 @@ public class DpApi
 
 			istream = connection.getInputStream();
 			isr = new InputStreamReader(istream, "UTF-8");
-			String content = isr.toString();
+			String content = CharStreams.toString(isr);
 
 			response = new HttpResponse(
 				connection.getResponseCode(),
@@ -313,5 +315,34 @@ public class DpApi
 		}
 
 		return gson;
+	}
+
+
+	/**
+	 * Create a loader
+	 * @param responseClass  The response model class
+	 * @param requestModel   The request model class
+	 * @param <T>            Type of response model
+	 * @return DpApiLoader
+	 */
+	public <T> DpApiLoader<T> createLoader(Class<T> responseClass, RequestModel requestModel)
+	{
+		return new DpApiLoader<T>(responseClass, this, requestModel);
+	}
+
+
+	/**
+	 * Creates a task loader.
+	 *
+	 * @param context        The android context
+	 * @param responseClass  The response model class
+	 * @param requestModel   The request model
+	 * @param <T>            Type of response model
+	 * @return DpApiTaskLoader
+	 */
+	public <T> DpApiTaskLoader<T> createTaskLoader(Context context, Class<T> responseClass, RequestModel requestModel)
+	{
+		DpApiLoader<T> apiLoader = new DpApiLoader<T>(responseClass, this, requestModel);
+		return new DpApiTaskLoader<T>(context, responseClass, apiLoader);
 	}
 }

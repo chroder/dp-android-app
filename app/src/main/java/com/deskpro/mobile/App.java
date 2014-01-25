@@ -52,6 +52,16 @@ public class App extends Application implements RemoteJsonLoader.GsonRetriever
 		return gson;
 	}
 
+	public ApiSession getApiSession()
+	{
+		return apiSession;
+	}
+
+	public void setApiSession(ApiSession apiSession)
+	{
+		this.apiSession = apiSession;
+	}
+
 	private static final class GsonFieldStrategy implements FieldNamingStrategy
 	{
 		public static final String TAG = GsonFieldStrategy.class.getSimpleName();

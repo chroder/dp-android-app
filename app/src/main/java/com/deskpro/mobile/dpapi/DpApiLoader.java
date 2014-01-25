@@ -1,5 +1,7 @@
 package com.deskpro.mobile.dpapi;
 
+import android.util.Log;
+
 import com.deskpro.mobile.dpapi.models.request.RequestModel;
 import com.deskpro.mobile.dpapi.models.response.HttpResponse;
 import com.google.gson.Gson;
@@ -40,6 +42,7 @@ public class DpApiLoader<T>
 		if (responseModel == null) {
 			HttpResponse response = getHttpResponse();
 			Gson gson = api.getGson();
+			Log.d("LOGIN", response.getContent());
 			responseModel = gson.fromJson(response.getContent(), responseClass);
 		}
 

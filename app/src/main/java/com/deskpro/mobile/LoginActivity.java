@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -13,6 +16,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
+
+import com.deskpro.mobile.dpapi.DpApi;
+import com.deskpro.mobile.dpapi.DpApiTaskLoader;
+import com.deskpro.mobile.dpapi.models.request.TestRequest;
+import com.deskpro.mobile.dpapi.models.request.TokenExchangeRequest;
+import com.deskpro.mobile.dpapi.models.response.TestResponse;
+import com.deskpro.mobile.dpapi.models.response.TokenExchangeResponse;
+import com.deskpro.mobile.models.ApiSession;
+import com.deskpro.mobile.util.Strings;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -35,13 +47,29 @@ public class LoginActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState)
 	{
         super.onCreate(savedInstanceState);
+
+		App app = (App)getApplication();
+		ApiSession session = app.getApiSession();
+		if (session.getApiToken() != null) {
+			startActivity(MainActivity.createIntent(this));
+			finish();
+			return;
+		}
+
         getActionBar().hide();
         setContentView(R.layout.activity_login);
 		ButterKnife.inject(this);
-        
-        urlText.setText("support.deskpro.com");
-        emailText.setText("chris.nadeau@deskpro.com");
-        passwordText.setText("hayhahyothajbawvyi");
+
+		urlText.setText("support.deskpro.com");
+		emailText.setText("chris.nadeau@deskpro.com");
+		passwordText.setText("hayhahyothajbawvyi");
+
+		if (session.getHelpdeskUrl() != null) {
+			urlText.setText(session.getHelpdeskUrl());
+		}
+		if (session.getEmail() != null) {
+			emailText.setText(session.getEmail());
+		}
         
         OnClickListener toggleListener = new OnClickListener() {
 			@Override
@@ -113,8 +141,9 @@ public class LoginActivity extends FragmentActivity
 	
 	private void handleLogin() {
 		setLoadingState(true);
-		
+
 		final String url      = getFormUrl();
+		final String apiUrl   = url + "/api";
 		final String email    = getFormEmail();
 		final String password = getFormPassword();
 		
@@ -128,9 +157,55 @@ public class LoginActivity extends FragmentActivity
 			setLoadingState(false);
 			return;
 		}
-		
-		startActivity(MainActivity.createIntent(this));
-		finish();
+
+		getSupportLoaderManager().initLoader(0, new Bundle(), new LoaderManager.LoaderCallbacks<TestResponse>()
+		{
+			@Override
+			public Loader<TestResponse> onCreateLoader(int i, Bundle bundle)
+			{
+				TestRequest req = new TestRequest();
+				DpApi anonApi = DpApi.newAnonymous(apiUrl);
+				DpApiTaskLoader<TestResponse> loader = anonApi.createTaskLoader(LoginActivity.this, TestResponse.class, req);
+				return loader;
+			}
+
+			@Override
+			public void onLoadFinished(Loader<TestResponse> objectLoader, TestResponse response)
+			{
+				if (response == null) {
+					setLoadingState(false);
+					return;
+				}
+
+				loginUser(apiUrl, email, password);
+			}
+
+			@Override public void onLoaderReset(Loader<TestResponse> objectLoader) {}
+		});
+	}
+
+	private void loginUser(final String url, final String email, final String password)
+	{
+		setLoadingState(true);
+		getSupportLoaderManager().initLoader(1, new Bundle(), new LoaderManager.LoaderCallbacks<TokenExchangeResponse>()
+		{
+			@Override
+			public Loader<TokenExchangeResponse> onCreateLoader(int i, Bundle bundle)
+			{
+				TokenExchangeRequest req = new TokenExchangeRequest(email, password);
+				DpApi anonApi = DpApi.newAnonymous(url);
+				DpApiTaskLoader<TokenExchangeResponse> loader = anonApi.createTaskLoader(LoginActivity.this, TokenExchangeResponse.class, req);
+				return loader;
+			}
+
+			@Override
+			public void onLoadFinished(Loader<TokenExchangeResponse> objectLoader, TokenExchangeResponse response)
+			{
+				Log.d("LOGIN", "LOGIN DONE");
+			}
+
+			@Override public void onLoaderReset(Loader<TokenExchangeResponse> objectLoader) {}
+		});
 	}
 	
 	private AlertDialog showLoginError(int messageId) {
@@ -173,6 +248,10 @@ public class LoginActivity extends FragmentActivity
 		}
 		
 		url = cleanUrl(url);
+
+		if (!url.matches("^https?://")) {
+			url = "http://" + url;
+		}
 		
 		return url;
 	}
@@ -199,7 +278,7 @@ public class LoginActivity extends FragmentActivity
 			}
 		}
 		
-		url = url.replaceAll("\\/$", "");
+		url = Strings.trim(url, '/', Strings.TRIM_RIGHT);
 		
 		return url;
 	}
