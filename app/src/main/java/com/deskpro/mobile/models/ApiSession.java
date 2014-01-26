@@ -3,16 +3,18 @@ package com.deskpro.mobile.models;
 public class ApiSession
 {
 	private String apiToken;
-	private String email;
 	private String apiUrl;
+	private String email;
+	private String name;
 	private String helpdeskUrl;
 	private String cloudName;
 
-	public ApiSession(String apiToken, String email, String apiUrl, String helpdeskUrl, String cloudName)
+	public ApiSession(String apiToken, String apiUrl, String email, String name, String helpdeskUrl, String cloudName)
 	{
 		this.apiToken = apiToken;
-		this.email = email;
 		this.apiUrl = apiUrl;
+		this.email = email;
+		this.name = name;
 		this.helpdeskUrl = helpdeskUrl;
 		this.cloudName = cloudName;
 	}
@@ -25,6 +27,11 @@ public class ApiSession
 	public String getEmail()
 	{
 		return email;
+	}
+
+	public String getName()
+	{
+		return name;
 	}
 
 	public String getApiUrl()

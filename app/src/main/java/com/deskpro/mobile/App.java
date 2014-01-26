@@ -9,13 +9,12 @@ import com.deskpro.mobile.models.ApiSession;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.deskpro.mobile.util.RemoteJsonLoader;
 import com.noveogroup.android.log.Logger;
 import com.noveogroup.android.log.LoggerManager;
 
 import java.lang.reflect.Field;
 
-public class App extends Application implements RemoteJsonLoader.GsonRetriever
+public class App extends Application
 {
 	private static final Logger logger = LoggerManager.getLogger(App.class.getSimpleName());
 
@@ -36,23 +35,20 @@ public class App extends Application implements RemoteJsonLoader.GsonRetriever
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		apiSession = new ApiSession(
 			prefs.getString("apiToken", null),
-			prefs.getString("email", null),
 			prefs.getString("apiUrl", null),
+			prefs.getString("email", null),
+			prefs.getString("name", null),
 			prefs.getString("helpdeskUrl", null),
 			prefs.getString("cloudName", null)
 		);
-	}
 
-	@Override
-	public Gson getGson()
-	{
-		if (gson == null) {
-			GsonBuilder gsonBuilder = new GsonBuilder();
-			gsonBuilder.setFieldNamingStrategy(new GsonFieldStrategy());
-			gson = gsonBuilder.create();
+		if (logger.isEnabled(Logger.Level.DEBUG)) {
+			if (apiSession.getApiToken() != null) {
+				logger.d("(Prefs) Saved API token: %s", apiSession.getApiToken());
+			} else {
+				logger.d("(Prefs) No saved API token");
+			}
 		}
-
-		return gson;
 	}
 
 	public ApiSession getApiSession()
@@ -62,20 +58,17 @@ public class App extends Application implements RemoteJsonLoader.GsonRetriever
 
 	public void setApiSession(ApiSession apiSession)
 	{
+		if (logger.isEnabled(Logger.Level.DEBUG)) logger.d("Saving new API token: %s", apiSession.getApiToken());
+
 		this.apiSession = apiSession;
-	}
-
-	private static final class GsonFieldStrategy implements FieldNamingStrategy
-	{
-		@Override
-		public String translateName(Field f)
-		{
-			String fieldName = f.getName();
-			String apiName = fieldName.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase();
-
-			if (logger.isEnabled(Logger.Level.DEBUG)) logger.d("[translateName] %s -> %s", fieldName, apiName);
-
-			return apiName;
-		}
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor edit = prefs.edit();
+		edit.putString("apiToken", apiSession.getApiToken());
+		edit.putString("apiUrl", apiSession.getApiUrl());
+		edit.putString("email", apiSession.getEmail());
+		edit.putString("name", apiSession.getName());
+		edit.putString("helpdeskUrl", apiSession.getHelpdeskUrl());
+		edit.putString("cloudName", apiSession.getCloudName());
+		edit.commit();
 	}
 }

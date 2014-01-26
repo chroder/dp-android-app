@@ -207,7 +207,20 @@ public class LoginActivity extends FragmentActivity
 			@Override
 			public void onLoadFinished(Loader<TokenExchangeResponse> objectLoader, TokenExchangeResponse response)
 			{
-				logger.i("Login Done");
+				setLoadingState(false);
+				ApiSession newApiSession = new ApiSession(
+					response.getApiToken(),
+					response.getPersonInfo().getPrimaryEmail(),
+					response.getPersonInfo().getName(),
+					response.getApiUrl() + "/api",
+					response.getHelpdeskInfo().getUrl(),
+					null
+				);
+				App app = (App)getApplication();
+				app.setApiSession(newApiSession);
+
+				startActivity(MainActivity.createIntent(LoginActivity.this));
+				finish();
 			}
 
 			@Override public void onLoaderReset(Loader<TokenExchangeResponse> objectLoader) {}
