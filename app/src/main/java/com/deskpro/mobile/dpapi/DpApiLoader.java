@@ -42,7 +42,6 @@ public class DpApiLoader<T>
 		if (responseModel == null) {
 			HttpResponse response = getHttpResponse();
 			Gson gson = api.getGson();
-			Log.d("LOGIN", response.getContent());
 			responseModel = gson.fromJson(response.getContent(), responseClass);
 		}
 

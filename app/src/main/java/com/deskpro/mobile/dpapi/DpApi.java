@@ -1,13 +1,14 @@
 package com.deskpro.mobile.dpapi;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.deskpro.mobile.dpapi.models.request.RequestModel;
 import com.deskpro.mobile.dpapi.models.response.HttpResponse;
 import com.deskpro.mobile.util.Strings;
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
+import com.noveogroup.android.log.Logger;
+import com.noveogroup.android.log.LoggerManager;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.net.URL;
 
 public class DpApi
 {
-	public static final String TAG = DpApi.class.getSimpleName();
+	private static final Logger logger = LoggerManager.getLogger(DpApi.class.getSimpleName());
 
 	/**
 	 * The root API url. This should include the '/api' bit.
@@ -164,7 +165,6 @@ public class DpApi
 	 */
 	public HttpResponse sendRequest(RequestModel model) throws IOException, IllegalArgumentException
 	{
-		HttpURLConnection connection = createConnection(model);
 		IOException firstException = null;
 
 		int tryNum = 0;
@@ -172,21 +172,22 @@ public class DpApi
 
 		do {
 			try {
+				HttpURLConnection connection = createConnection(model);
 				return doSendRequest(connection, sendJson);
 			} catch (IOException e) {
 				if (firstException == null) {
 					firstException = e;
 				}
-				Log.e(TAG, String.format("Exception: %s", e.getMessage()));
+				if (logger.isEnabled(Logger.Level.DEBUG)) logger.d(e);
 			}
 
-			Log.e(TAG, String.format("Retrying in %d ...", retryWaitTime));
+			if (logger.isEnabled(Logger.Level.DEBUG)) logger.d("Retrying in %d", retryWaitTime);
 			try {
 				Thread.sleep(retryWaitTime);
 			} catch (InterruptedException ie) {
 				break;
 			}
-			Log.e(TAG, String.format("Retrying: Attempt #%d", tryNum+1));
+			if (logger.isEnabled(Logger.Level.DEBUG)) logger.d("Retrying: Attempt %d", tryNum+1);
 		} while(tryNum++ < retryLimit);
 
 		throw firstException;
@@ -200,16 +201,27 @@ public class DpApi
 		HttpResponse      response;
 
 		try {
+			if (logger.isEnabled(Logger.Level.VERBOSE)) logger.v("[REQ] Sending %s %s", connection.getRequestMethod(), connection.getURL().toString());
 			if (sendJson != null) {
+				if (logger.isEnabled(Logger.Level.VERBOSE)) logger.v("[REQ] Sending JSON payload: %s", sendJson);
+
+				byte[] sendJsonBytes = sendJson.getBytes("UTF-8");
+
+				connection.addRequestProperty("Content-type", "application/json");
+				connection.addRequestProperty("Content-length", String.valueOf(sendJsonBytes.length));
 				ostream = connection.getOutputStream();
-				ostream.write(sendJson.getBytes("UTF-8"));
+				ostream.write(sendJsonBytes);
 				ostream.close();
 				ostream = null;
+				if (logger.isEnabled(Logger.Level.VERBOSE)) logger.v("[REQ] Done sending JSON payload", sendJson);
 			}
 
+			if (logger.isEnabled(Logger.Level.VERBOSE)) logger.v("[REQ] Reading response", sendJson);
 			istream = connection.getInputStream();
 			isr = new InputStreamReader(istream, "UTF-8");
 			String content = CharStreams.toString(isr);
+
+			if (logger.isEnabled(Logger.Level.VERBOSE)) logger.v("[REQ] Response %d %s: %s", connection.getResponseCode(), connection.getResponseMessage(), content);
 
 			response = new HttpResponse(
 				connection.getResponseCode(),
@@ -246,18 +258,20 @@ public class DpApi
 		try {
 			connection.setRequestMethod(model.getMethod());
 		} catch (ProtocolException e) {
-			Log.e(TAG, String.format("createConnection(%s): Invalid method: %s: %s", model.getClass().getSimpleName(), model.getMethod(), e.getMessage()));
+			logger.a(e, "createConnection(%s): Invalid method");
 			throw new IllegalArgumentException();
 		}
 
 		if (apiToken != null) {
 			connection.addRequestProperty("X-DeskPRO-API-Token", apiToken);
-		} else {
+		} else if (apiKey != null) {
 			connection.addRequestProperty("X-DeskPRO-API-Key", apiKey);
 			if (agentId != 0) {
 				connection.addRequestProperty("X-DeskPRO-Agent-ID", Integer.toString(agentId));
 			}
 		}
+
+		connection.addRequestProperty("Connection", "Close");
 
 		return connection;
 	}
@@ -282,7 +296,7 @@ public class DpApi
 		try {
 			fullUrl = new URL(fullUrlString);
 		} catch (MalformedURLException e) {
-			Log.e(TAG, String.format("buildModelUrl(%s): Invalid URL: %s: %s", model.getClass().getSimpleName(), fullUrlString, e.getMessage()));
+			logger.a(e, "buildModelUrl(%s): Invalid URL");
 			throw new IllegalArgumentException();
 		}
 

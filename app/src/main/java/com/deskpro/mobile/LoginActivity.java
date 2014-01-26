@@ -25,12 +25,16 @@ import com.deskpro.mobile.dpapi.models.response.TestResponse;
 import com.deskpro.mobile.dpapi.models.response.TokenExchangeResponse;
 import com.deskpro.mobile.models.ApiSession;
 import com.deskpro.mobile.util.Strings;
+import com.noveogroup.android.log.Logger;
+import com.noveogroup.android.log.LoggerManager;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class LoginActivity extends FragmentActivity
 {
+	private static final Logger logger = LoggerManager.getLogger(App.class.getSimpleName());
+
 	@InjectView(R.id.login_onsite)             Button      onsiteTab;
 	@InjectView(R.id.login_cloud)              Button      cloudTab;
 	@InjectView(R.id.login_btn)                Button      loginBtn;
@@ -56,7 +60,9 @@ public class LoginActivity extends FragmentActivity
 			return;
 		}
 
-        getActionBar().hide();
+		if (getActionBar() != null) {
+			getActionBar().hide();
+		}
         setContentView(R.layout.activity_login);
 		ButterKnife.inject(this);
 
@@ -74,7 +80,7 @@ public class LoginActivity extends FragmentActivity
         OnClickListener toggleListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (!isLoading && !((Button)v).isSelected()) {
+				if (!isLoading && !v.isSelected()) {
 					toggleTabs();
 				}
 			}
@@ -143,7 +149,7 @@ public class LoginActivity extends FragmentActivity
 		setLoadingState(true);
 
 		final String url      = getFormUrl();
-		final String apiUrl   = url + "/api";
+		final String apiUrl   = url + "/index.php/api";
 		final String email    = getFormEmail();
 		final String password = getFormPassword();
 		
@@ -201,7 +207,7 @@ public class LoginActivity extends FragmentActivity
 			@Override
 			public void onLoadFinished(Loader<TokenExchangeResponse> objectLoader, TokenExchangeResponse response)
 			{
-				Log.d("LOGIN", "LOGIN DONE");
+				logger.i("Login Done");
 			}
 
 			@Override public void onLoaderReset(Loader<TokenExchangeResponse> objectLoader) {}
@@ -225,7 +231,7 @@ public class LoginActivity extends FragmentActivity
 		
 		return dialog;
 	}
-	
+
 	
 	/**
 	 * Get the URL from the form
@@ -235,14 +241,18 @@ public class LoginActivity extends FragmentActivity
 	private String getFormUrl()
 	{
 		String url;
+
+		if (urlText.getText() == null) {
+			return "";
+		}
 		
 		if (onsiteTab.isSelected()) {
 			url = urlText.getText().toString().trim().toLowerCase();
 		} else {
 			url = urlText.getText().toString().trim()
 					.toLowerCase()
-					.replaceAll("^https?:\\/\\/", "")
-					.replaceAll("\\/.*?$", "")
+					.replaceAll("^https?://", "")
+					.replaceAll("/.*?$", "")
 					.replaceAll("\\.deskpro\\.com.*?", "");
 			url = "https://" + url;
 		}
@@ -260,18 +270,18 @@ public class LoginActivity extends FragmentActivity
 	/**
 	 * Clean the URL so we're at the "root" of the deskpro site
 	 * 
-	 * @param url
+	 * @param url The URL to clean
 	 * @return The URL
 	 */
 	private String cleanUrl(String url) {
-		Pattern messyUrlRegex = Pattern.compile("^(.*?)\\/index\\.php.*?$");
+		Pattern messyUrlRegex = Pattern.compile("^(.*?)/index\\.php.*?$");
 		Matcher m;
 		
 		m = messyUrlRegex.matcher(url);
 		if (m.matches()) {
 			url = m.group(1);
 		} else {
-			messyUrlRegex = Pattern.compile("^(.*?)\\/index\\.php.*?$");
+			messyUrlRegex = Pattern.compile("^(.*?)/index\\.php.*?$");
 			m = messyUrlRegex.matcher(url);
 			if (m.matches()) {
 				url = m.group(1);
@@ -290,6 +300,10 @@ public class LoginActivity extends FragmentActivity
 	 * @return The email address
 	 */
 	private String getFormEmail() {
+		if (emailText.getText() == null) {
+			return "";
+		}
+
 		String email = emailText.getText().toString().trim();
 		return email;
 	}
@@ -301,7 +315,11 @@ public class LoginActivity extends FragmentActivity
 	 * @return the password
 	 */
 	private String getFormPassword() {
-		String password = emailText.getText().toString();
+		if (passwordText.getText() == null) {
+			return "";
+		}
+
+		String password = passwordText.getText().toString();
 		return password;
 	}
 }

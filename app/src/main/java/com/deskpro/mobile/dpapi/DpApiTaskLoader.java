@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.deskpro.mobile.util.GenericAsyncTaskLoader;
+import com.noveogroup.android.log.LoggerManager;
 
 import java.io.IOException;
 
@@ -25,7 +26,7 @@ public class DpApiTaskLoader<T> extends GenericAsyncTaskLoader
 		try {
 			return dpApiLoader.getResponseModel();
 		} catch (IOException e) {
-			Log.e("Exception: %s", e.getMessage());
+			LoggerManager.getLogger().e(e);
 		}
 
 		return null;

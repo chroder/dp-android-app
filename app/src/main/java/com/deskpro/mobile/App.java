@@ -4,18 +4,21 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.deskpro.mobile.models.ApiSession;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.deskpro.mobile.util.RemoteJsonLoader;
+import com.noveogroup.android.log.Logger;
+import com.noveogroup.android.log.LoggerManager;
 
 import java.lang.reflect.Field;
 
 public class App extends Application implements RemoteJsonLoader.GsonRetriever
 {
+	private static final Logger logger = LoggerManager.getLogger(App.class.getSimpleName());
+
 	public static final String TAB_NOTIF      = "tab_notif";
 	public static final String TAB_TICKETS    = "tab_tickets";
 	public static final String ACTIVITY_NOTIF = "notif";
@@ -64,15 +67,14 @@ public class App extends Application implements RemoteJsonLoader.GsonRetriever
 
 	private static final class GsonFieldStrategy implements FieldNamingStrategy
 	{
-		public static final String TAG = GsonFieldStrategy.class.getSimpleName();
-
 		@Override
 		public String translateName(Field f)
 		{
 			String fieldName = f.getName();
 			String apiName = fieldName.replaceAll("([a-z0-9])([A-Z])", "$1_$2").toLowerCase();
 
-			Log.i(TAG, String.format("GsonFieldStrategy: %s -> %s", fieldName, apiName));
+			if (logger.isEnabled(Logger.Level.DEBUG)) logger.d("[translateName] %s -> %s", fieldName, apiName);
+
 			return apiName;
 		}
 	}
