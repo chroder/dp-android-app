@@ -25,10 +25,4 @@ public interface RequestModel
 	 * @return Query string data
 	 */
 	public String getQueryString();
-
-	/**
-	 * Get the response model class
-	 * @return
-	 */
-	public Class getResponseModelClass();
 }

@@ -104,4 +104,13 @@ public class TabManager implements TabHost.OnTabChangeListener
 			ft.commit();
 		}
 	}
+
+	public View getCurrentView()
+	{
+		return mTabHost.getCurrentView();
+	}
+
+	public Fragment getCurrentFragment() {
+		return mLastTab.fragment;
+	}
 }

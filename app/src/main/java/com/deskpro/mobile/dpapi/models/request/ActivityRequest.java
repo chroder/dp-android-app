@@ -1,13 +1,26 @@
 package com.deskpro.mobile.dpapi.models.request;
 
-import com.deskpro.mobile.dpapi.models.response.TestResponse;
-
-public class TestRequest implements RequestModel
+/**
+ * Created by chroder on 26/01/2014.
+ */
+public class ActivityRequest implements RequestModel
 {
+	private int lastId;
+
+	public ActivityRequest(int lastId)
+	{
+		this.lastId = lastId;
+	}
+
+	public int getLastId()
+	{
+		return lastId;
+	}
+
 	@Override
 	public String getEndpoint()
 	{
-		return "/test";
+		return "/activity/" + String.valueOf(lastId);
 	}
 
 	@Override

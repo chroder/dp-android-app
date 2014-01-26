@@ -4,6 +4,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
@@ -46,6 +48,10 @@ public class LoginActivity extends FragmentActivity
 	@InjectView(R.id.login_password)           EditText    passwordText;
 
 	private boolean isLoading = false;
+
+	public static Intent createIntent(Context context) {
+		return new Intent(context.getApplicationContext(), LoginActivity.class);
+	}
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState)
@@ -164,6 +170,7 @@ public class LoginActivity extends FragmentActivity
 			return;
 		}
 
+		getSupportLoaderManager().destroyLoader(0);
 		getSupportLoaderManager().initLoader(0, new Bundle(), new LoaderManager.LoaderCallbacks<TestResponse>()
 		{
 			@Override
@@ -193,6 +200,7 @@ public class LoginActivity extends FragmentActivity
 	private void loginUser(final String url, final String email, final String password)
 	{
 		setLoadingState(true);
+		getSupportLoaderManager().destroyLoader(0);
 		getSupportLoaderManager().initLoader(1, new Bundle(), new LoaderManager.LoaderCallbacks<TokenExchangeResponse>()
 		{
 			@Override
@@ -210,9 +218,9 @@ public class LoginActivity extends FragmentActivity
 				setLoadingState(false);
 				ApiSession newApiSession = new ApiSession(
 					response.getApiToken(),
+					response.getApiUrl() + "api",
 					response.getPersonInfo().getPrimaryEmail(),
 					response.getPersonInfo().getName(),
-					response.getApiUrl() + "/api",
 					response.getHelpdeskInfo().getUrl(),
 					null
 				);

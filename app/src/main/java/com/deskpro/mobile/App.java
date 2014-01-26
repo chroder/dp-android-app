@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.deskpro.mobile.dpapi.DpApi;
 import com.deskpro.mobile.models.ApiSession;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
@@ -24,6 +25,7 @@ public class App extends Application
 
 	private Gson gson;
 	private ApiSession apiSession;
+	private DpApi dpApi;
 
 	public static App from(Context context)
 	{
@@ -70,5 +72,22 @@ public class App extends Application
 		edit.putString("helpdeskUrl", apiSession.getHelpdeskUrl());
 		edit.putString("cloudName", apiSession.getCloudName());
 		edit.commit();
+
+		dpApi = null;
+	}
+
+	public DpApi getDpApi()
+	{
+		if (dpApi == null) {
+			if (apiSession.getApiUrl() != null && apiSession.getApiToken() != null) {
+				dpApi = DpApi.newWithToken(apiSession.getApiUrl(), apiSession.getApiToken());
+			} else if (apiSession.getApiUrl() != null) {
+				dpApi = DpApi.newAnonymous(apiSession.getApiUrl());
+			} else {
+				dpApi = null;
+			}
+		}
+
+		return dpApi;
 	}
 }

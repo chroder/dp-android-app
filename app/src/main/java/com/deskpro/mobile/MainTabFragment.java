@@ -74,4 +74,8 @@ public class MainTabFragment extends Fragment {
 		
 		return mTabs.newTabSpec(tag).setIndicator(tab);
 	}
+
+	public Fragment getCurrentFragment() {
+		return mTabManager.getCurrentFragment();
+	}
 }

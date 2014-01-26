@@ -43,10 +43,4 @@ public class TokenExchangeRequest implements RequestModel
 	{
 		return null;
 	}
-
-	@Override
-	public Class getResponseModelClass()
-	{
-		return TokenExchangeResponse.class;
-	}
 }

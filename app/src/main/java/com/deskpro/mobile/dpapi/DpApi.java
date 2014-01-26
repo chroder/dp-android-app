@@ -261,7 +261,7 @@ public class DpApi
 		try {
 			connection.setRequestMethod(model.getMethod());
 		} catch (ProtocolException e) {
-			logger.a(e, "createConnection(%s): Invalid method");
+			logger.a(e, "createConnection: Invalid method");
 			throw new IllegalArgumentException();
 		}
 
@@ -299,7 +299,7 @@ public class DpApi
 		try {
 			fullUrl = new URL(fullUrlString);
 		} catch (MalformedURLException e) {
-			logger.a(e, "buildModelUrl(%s): Invalid URL");
+			logger.a(e, "buildModelUrl: Invalid URL");
 			throw new IllegalArgumentException();
 		}
 

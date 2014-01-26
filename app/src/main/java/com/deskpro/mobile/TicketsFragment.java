@@ -29,7 +29,12 @@ public class TicketsFragment extends ListFragment {
 		NotificationsAdapter adapter = new NotificationsAdapter();
 		setListAdapter(adapter);
 	}
-	
+
+	public void refresh()
+	{
+
+	}
+
 	public static class NotificationsAdapter extends BaseAdapter {
 		
 		private LayoutInflater mInflater;
