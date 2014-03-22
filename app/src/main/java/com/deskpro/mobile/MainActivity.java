@@ -123,7 +123,7 @@ public class MainActivity extends FragmentActivity
 				MainActivity.this.updateRefreshingIcon();
 
 				if (activityResponse != null) {
-					for (ActivityItem a : activityResponse.getActivity()) {
+					for (ActivityItem a : activityResponse.getAlerts()) {
 						if (notifs.containsKey(a.getId())) {
 							notifs.remove(a.getId());
 						}

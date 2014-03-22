@@ -4,15 +4,22 @@ import java.util.LinkedList;
 
 public class ActivityResponse
 {
-	private LinkedList<ActivityItem> activity;
+	private int lastId;
+	private LinkedList<ActivityItem> alerts;
 
-	public ActivityResponse(LinkedList<ActivityItem> activity)
+	public ActivityResponse(int lastId, LinkedList<ActivityItem> alerts)
 	{
-		this.activity = activity;
+		this.lastId = lastId;
+		this.alerts = alerts;
 	}
 
-	public LinkedList<ActivityItem> getActivity()
+	public int getLastId()
 	{
-		return activity;
+		return lastId;
+	}
+
+	public LinkedList<ActivityItem> getAlerts()
+	{
+		return alerts;
 	}
 }

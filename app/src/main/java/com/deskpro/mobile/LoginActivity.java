@@ -72,9 +72,9 @@ public class LoginActivity extends FragmentActivity
         setContentView(R.layout.activity_login);
 		ButterKnife.inject(this);
 
-		urlText.setText("support.deskpro.com");
-		emailText.setText("chris.nadeau@deskpro.com");
-		passwordText.setText("hayhahyothajbawvyi");
+		urlText.setText(getResources().getString(R.string.hd_url));
+		emailText.setText(getResources().getString(R.string.hd_agent_email));
+		passwordText.setText(getResources().getString(R.string.hd_agent_password));
 
 		if (session.getHelpdeskUrl() != null) {
 			urlText.setText(session.getHelpdeskUrl());
