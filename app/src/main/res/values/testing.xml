@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<item name="is_testing" type="bool">false</item>
+	<item name="hd_url" type="string"></item>
+	<item name="hd_agent_email" type="string"></item>
+	<item name="hd_agent_password" type="string"></item>
+	<item name="hd_api_token" type="string"></item>
+</resources>
